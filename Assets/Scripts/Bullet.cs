@@ -1,20 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _MaxLifeTime = 15;
+    [SerializeField] private int _Damage = 10;
 
-    public void Init()
+    Vector3 _direction;
+
+    public void Init(Vector3 _Direction)
     {
-        Debug.Log("Create bullet");
         Destroy(gameObject, _MaxLifeTime);
+        _direction = _Direction;
     }
 
     private void Update()
     {
-        transform.Translate(Vector3.forward * _speed * Time.deltaTime);
+        transform.Translate(_direction * _speed * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<Enemy>())
+        {
+            other.GetComponent<Enemy>().Damage(_Damage);
+            Destroy(gameObject);
+        }
+        else if (other.GetComponent<MovePlayer>())
+        { 
+            other.GetComponent<MovePlayer>().Damage(_Damage);
+            Destroy(gameObject);
+        }
+        else if (other.GetComponent<TV>())
+        {
+            other.GetComponent<TV>().Damage(_Damage);
+            Destroy(gameObject);
+        }
+        else if (other.GetComponent<BossKolyn>())
+        {
+            other.GetComponent<BossKolyn>().Damage(_Damage);
+            Destroy(gameObject);
+        }
     }
 }
